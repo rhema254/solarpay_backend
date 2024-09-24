@@ -66,6 +66,45 @@ def ussd_callback():
     return make_response(response, 200)
 
 
+@app.route('/enroll', methods=['POST'])
+def enroll_user():
+    phone_number = request.form.get('phone_number')
+    payment_plan = request.form.get('payment_plan')
+
+    # Find the user in the database
+    user = User.query.filter_by(phone_number=phone_number).first()
+
+    if user:
+        user.payment_plan = payment_plan  # Update user's payment plan
+        db.session.commit()  # Commit changes to the database
+        return "User enrolled successfully", 200
+    else:
+        return "User not found", 404
+
+
+@app.route('/payment', methods=['POST'])
+def payment():
+    """ Endpoint to handle payment requests from the USSD interface """
+    if request.method == 'POST':
+        phone = request.form.get('phone')  # User's phone number
+        amount = request.form.get('amount')  # Payment amount
+        print(f"Processing payment for {phone} of amount {amount}")
+
+        # Initiate payment using the STK push function
+        callback_url = request.url_root  # Get the root URL for the callback
+        payment_response = initiate_payment(phone, amount, callback_url)
+        
+        return payment_response  # Return the payment response in JSON format
+
+@app.route('/callback', methods=['POST'])
+def callback():
+    """ Callback endpoint to handle payment confirmation from Safaricom """
+    data = request.get_json()
+    print("Payment callback data:", data)
+    # Here you can process the callback data, e.g., confirm payment status and update the database
+    return "ok"
+
+
 
 
 

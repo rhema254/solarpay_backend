@@ -6,13 +6,13 @@ class Config:
     
 
 class DevConfig(Config):
-    SQLALCHEMY_DATABASE_URI = config('SQLALCHEMY_DATABASE_URI')
-    DEBUG = False
-    DB_USERNAME= config('DB_USERNAME')
-    DB_PASSWORD= config('DB_PASSWORD')
-    DB_HOST= config('DB_HOST')
-    DB_PORT=3306
-    DB_NAME= config('DB_NAME')
+    # SQLALCHEMY_DATABASE_URI = config('SQLALCHEMY_DATABASE_URI')
+    # DEBUG = False
+    # DB_USERNAME= config('DB_USERNAME')
+    # DB_PASSWORD= config('DB_PASSWORD')
+    # DB_HOST= config('DB_HOST')
+    # DB_PORT=3306
+    # DB_NAME= config('DB_NAME')
     SQLALCHEMY_ECHO = False 
     CONSUMER_KEY = config('CONSUMER_KEY')
     CONSUMER_SECRET = config('CONSUMER_SECRET')
