@@ -45,7 +45,7 @@ def ussd_callback():
     # Split the input text (user interaction)
     user_input = text.split('*')
     
-    existing_user = users.get_by_phone_number(phone_number)  # Check if the user exists
+    existing_user = User.get_by_phone_number(phone_number)  # Check if the user exists
 
    # Menu navigation logic
     if text == "":
@@ -90,7 +90,7 @@ def ussd_callback():
         town = text.split("*")[5]
         
         # Now save the user to the database
-        new_user = users(
+        new_user = User(
             phone_number=phone_number,
             f_name= first_name,
             l_name= last_name,
