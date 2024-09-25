@@ -85,9 +85,7 @@ def ussd_callback():
             response = "END Registration successful! Welcome to SolarPay.\n"
         except Exception as e:
             response = "END Registration failed. Please try again later.\n"
-        else:
-            response = "CON Invalid input. Please try again:\n"
-
+    
     
     elif text == "1":
         # Buy Solar Energy selected
