@@ -9,7 +9,7 @@ import datetime
 class users(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=False, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     phone_number = db.Column(db.String(10), unique = True, nullable = False)
     f_name= db.Column(db.String(30))
     l_name = db.Column(db.String(30))
@@ -41,7 +41,7 @@ class users(db.Model):
     def get_by_phone_number(cls, phone_number):
         return cls.query.filter_by(phone_number=phone_number).first()
     
-    
+
 
 class PaymentPlan(db.Model):
     __tablename__ = 'payment_plans'
