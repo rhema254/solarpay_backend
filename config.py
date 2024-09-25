@@ -18,6 +18,8 @@ class DevConfig(Config):
     CONSUMER_SECRET = config('CONSUMER_SECRET')
     PASSKEY = config('PASSKEY')
     CALLBACK_URL = config('CALLBACK_URL')
+    username = config('USERNAME')
+    api_key = config('API_KEY')
 
 
 class ProdConfig(Config):

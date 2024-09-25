@@ -1,3 +1,4 @@
+africastalking==1.2.8
 aniso8601==9.0.1
 attrs==24.2.0
 blinker==1.8.2
@@ -24,6 +25,7 @@ pytz==2024.2
 referencing==0.35.1
 requests==2.32.3
 rpds-py==0.20.0
+schema==0.7.7
 SQLAlchemy==2.0.35
 typing_extensions==4.12.2
 urllib3==2.2.3
