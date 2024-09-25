@@ -3,14 +3,20 @@ from flask_restx import Api, Resource, fields
 from config import DevConfig
 from models import *
 from exts import db
-from flask_sqlalchemy import SQLAlchemy
 from decouple import config
 # from flask_cors import CORS
+# from flask_sqlalchemy import SQLAlchemy
+
+
 # Import the payment function
 from mpesa import initiate_payment
 
 app = Flask(__name__)
+app.config.from_object(DevConfig)
+app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 db.init_app(app)
+
+
 callback_url = config('CALLBACK_URL')
 
 @app.route('/', methods=['GET'])
@@ -305,7 +311,7 @@ if __name__ == "__main__":
             )
 
         
-
+     
 
 
 

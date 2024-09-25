@@ -17,7 +17,7 @@ class DevConfig(Config):
     CONSUMER_KEY = config('CONSUMER_KEY')
     CONSUMER_SECRET = config('CONSUMER_SECRET')
     PASSKEY = config('PASSKEY')
-    CALLBACK_URL = config('CALLBACK_ENDPOINT')
+    CALLBACK_URL = config('CALLBACK_URL')
 
 
 class ProdConfig(Config):
