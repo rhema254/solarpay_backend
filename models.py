@@ -44,7 +44,7 @@ class users(db.Model):
 
 
 class paymentplans(db.Model):
-    __tablename__ = 'payment_plans'
+    __tablename__ = 'paymentplans'
     id = db.Column(db.Integer, primary_key=True)
     plan_name = db.Column(db.String(100), nullable=False)
     total_amount = db.Column(db.Integer, nullable=False)
@@ -76,14 +76,14 @@ class flexibleplans(db.Model):
     duration_months = db.Column(db.Integer, nullable=False)  # User-defined duration
     created_at = db.Column(db.DateTime, default=db.func.now())
     
-    user = db.relationship('users', back_populates='flexible_plans')
+    user = db.relationship('users', back_populates='flexibleplans')
 
 
 class payments(db.Model):
     __tablename__ = 'payments'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    plan_id = db.Column(db.Integer, db.ForeignKey('payment_plans.id'), nullable=False)
+    plan_id = db.Column(db.Integer, db.ForeignKey('paymentplans.id'), nullable=False)
     amount_paid = db.Column(db.Integer, nullable=False)
     payment_date = db.Column(db.DateTime)
     payment_status = db.Column(db.String(50), default="pending")
@@ -107,7 +107,7 @@ class installmentschedules(db.Model):
     __tablename__ = 'installmentschedules'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    plan_id = db.Column(db.Integer, db.ForeignKey('payment_plans.id'), nullable=False)
+    plan_id = db.Column(db.Integer, db.ForeignKey('paymentplans.id'), nullable=False)
     installment_due_date = db.Column(db.Date, nullable=False)
     installment_amount = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(50), default="unpaid")
