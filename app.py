@@ -25,23 +25,6 @@ def index():
     return 'hello world'
 
 
-
-def send_payment_history(phone_number):
-    pass
-
-def get_next_due_date(phone_number):
-    pass
-
-def get_outstanding_balance(phone_number):
-    pass
-
-def get_last_payment_status(phone_number):
-    pass
-    
-
-
-
-
 @app.route('/ussd/callback', methods=['POST'])
 def ussd_callback():
     session_id = request.form.get('sessionId')
@@ -121,11 +104,9 @@ def ussd_callback():
         else:
             response = "CON Invalid town name. Please try again:\n"
     
-    return response
-
     elif text == "1":
         # Buy Solar Energy selected
-        response = "CON Enter the desired Purchase Mode:\n (Solar-Power for Home costs Ksh.100,000)\n"
+        response = "CON Enter the desired Purcha`se Mode:\n (Solar-Power for Home costs Ksh.100,000)\n"
         response += "1. One-Time Payment\n"
         response += "2. Lipa Mdogo Mdogo\n"
     elif text == "1*1":
