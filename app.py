@@ -53,56 +53,41 @@ def ussd_callback():
         if existing_user:
             response = "END You are already registered with SolarPay."
         else:
-            response = "CON Please enter your phone number: \n"
+            response = "CON Please enter OFFICIAL your First Name as It appears on Your National ID: \n"
 
-    elif len(user_input) == 2 and user_input[0] == "0":  # Capture phone number input (phone numbers are longer)
-        phone_no = user_input[1]
-        if len(phone_no) >= 10 and phone_no.isdigit():  # Check that the input is a valid phone number
-            if phone_no == phone_number:
-                response = "CON Please enter the phone number you are currently using to make this request.\n"
-                response += "0. Go back\n"
-            else:
-                response = "CON Enter your first name:\n"  # Prompt for first name
-        else:
-            response = "CON Invalid phone number. Please try again:\n"
-    
-    elif len(user_input) == 3 and user_input[0] == "0" and user_input[2].isdigit():  # If the user chose 0*1
-        # We're assuming that after entering the phone number, we're expecting their first name
-        first_name = user_input[2]
-        if first_name.isalpha():  # Ensure input is alphabetic
-            response = "CON Enter your last name:\n"
-        else:
-            response = "CON Invalid name. Please enter your first name again:\n"
-    
-    elif len(user_input) == 4 and user_input[0] == "0" and user_input[3].isalpha():  # Capture last name
-        last_name = user_input[3]
-        response = "CON Enter your county:\n"
+    elif len(user_input) == 2 and user_input[0] == "0" and user_input[1].isalpha():  # Capture first name
+        first_name = user_input[1]
+        response = "CON Please enter your OFFICIAL Last Name as it appears on Your National ID:\n"
 
-    elif len(user_input) == 5 and user_input[0] == "0":  # Capture county (can be a mix of alphanumeric or words)
-        county = user_input[4]
-        if county.isalpha():  # County should be alphabetic
-            response = "CON Enter your nearest town:\n"
+    elif len(user_input) == 3 and user_input[0] == "0" and user_input[2].isalpha():  # Capture last name
+        last_name = user_input[2]
+        response = "CON Enter your County:\n"
+
+    elif len(user_input) == 4 and user_input[0] == "0":  # Capture county
+        county = user_input[3]
+        if county.isalpha():
+            response = "CON Enter your Nearest Town:\n"
         else:
-            response = "CON Invalid county. Please enter your county again:\n"
-    
-    elif len(user_input) == 6 and user_input[0] == "0":  # Capture town
-        town = user_input[5]
-        if town.isalpha():  # Town should be alphabetic
-            # Now save the user to the database
-            new_user = User(
-                phone_number=phone_number,
-                f_name=user_input[2],  # First name
-                l_name=user_input[3],  # Last name
-                county=county,
-                town=town
-            )
-            try:
-                new_user.save()  # Save the new user
-                response = "END Registration successful! Welcome to SolarPay.\n"
-            except Exception as e:
-                response = "END Registration failed. Please try again later.\n"
+            response = "CON Invalid County. Please enter your County again:\n"
+
+    elif len(user_input) == 5 and user_input[0] == "0" and user_input[4].isalpha():  # Capture town
+        town = user_input[4]
+        # Save user to the database
+        new_user = User(
+            phone_number=phone_number,
+            f_name=user_input[1],  # First name
+            l_name=user_input[2],  # Last name
+            county=county,
+            town=town
+        )
+        try:
+            new_user.save()  # Save the new user
+            response = "END Registration successful! Welcome to SolarPay.\n"
+        except Exception as e:
+            response = "END Registration failed. Please try again later.\n"
         else:
-            response = "CON Invalid town name. Please try again:\n"
+            response = "CON Invalid input. Please try again:\n"
+
     
     elif text == "1":
         # Buy Solar Energy selected
