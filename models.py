@@ -74,7 +74,7 @@ class FlexiblePlan(db.Model):
     agreed_installment_amount = db.Column(db.Integer, nullable=False)
     number_of_installments = db.Column(db.Integer, nullable=False)
     duration_months = db.Column(db.Integer, nullable=False)  # User-defined duration
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=db.func.now())
     
     user = db.relationship('User', back_populates='flexible_plans')
 
@@ -85,7 +85,7 @@ class Payment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     plan_id = db.Column(db.Integer, db.ForeignKey('payment_plans.id'), nullable=False)
     amount_paid = db.Column(db.Integer, nullable=False)
-    payment_date = db.Column(db.DateTime, default=datetime.utcnow)
+    payment_date = db.Column(db.DateTime)
     payment_status = db.Column(db.String(50), default="pending")
 
 
@@ -108,7 +108,7 @@ class InstallmentSchedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     plan_id = db.Column(db.Integer, db.ForeignKey('payment_plans.id'), nullable=False)
-    installment_due_date = db.Column(db.DateTime, nullable=False)
+    installment_due_date = db.Column(db.Date, nullable=False)
     installment_amount = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(50), default="unpaid")
 
@@ -133,7 +133,7 @@ class Complaint(db.Model):
     category = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(50), default="open")
-    submission_date = db.Column(db.DateTime, default=datetime.utcnow)
+    submission_date = db.Column(db.DateTime, default=db.func.now())
 
     def save(self):
         db.session.add(self)
@@ -154,7 +154,7 @@ class TransactionHistory(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
+    date = db.Column(db.DateTime, default=db.func.now())
     transaction_type = db.Column(db.String(50), nullable=False)
 
     def save(self):
