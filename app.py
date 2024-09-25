@@ -19,16 +19,16 @@ def index():
 
 
 
-def send_payment_history():
+def send_payment_history(phone_number):
     pass
 
-def get_next_due_date():
+def get_next_due_date(phone_number):
     pass
 
-def get_outstanding_balance():
+def get_outstanding_balance(phone_number):
     pass
 
-def get_last_payment_status():
+def get_last_payment_status(phone_number):
     pass
     
 
