@@ -10,7 +10,7 @@ from decouple import config
 from mpesa import initiate_payment
 
 app = Flask(__name__)
-
+db.init_app(app)
 callback_url = config('CALLBACK_URL')
 
 @app.route('/', methods=['GET'])
@@ -299,7 +299,10 @@ def enroll_user():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    with app.app_context():
+        app.run(
+            debug=True
+            )
 
         
 
