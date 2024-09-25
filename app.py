@@ -64,8 +64,8 @@ def ussd_callback():
         response = "CON Enter your County:\n"
 
     elif len(user_input) == 4 and user_input[0] == "0":  # Capture county
-        county = user_input[3]
-        if county.isalpha():
+        county_name = user_input[3]
+        if county_name.isalpha():
             response = "CON Enter your Nearest Town:\n"
         else:
             response = "CON Invalid County. Please enter your County again:\n"
@@ -77,8 +77,8 @@ def ussd_callback():
             phone_number=phone_number,
             f_name=user_input[1],  # First name
             l_name=user_input[2],  # Last name
-            county=county,
-            town=town
+            county=user_input[3],
+            town=user_input[4]
         )
         try:
             new_user.save()  # Save the new user
