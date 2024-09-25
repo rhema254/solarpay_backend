@@ -4,12 +4,36 @@ from config import DevConfig
 from models import *
 from exts import db
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from decouple import config
+# from flask_cors import CORS
+# Import the payment function
+from mpesa import initiate_payment
 
 app = Flask(__name__)
 
-# Import the payment function
-from mpesa import initiate_payment
+callback_url = config('CALLBACK_URL')
+
+@app.route('/', methods=['GET'])
+def index():
+    return 'hello world'
+
+
+
+def send_payment_history():
+    pass
+
+def get_next_due_date():
+    pass
+
+def get_outstanding_balance():
+    pass
+
+def get_last_payment_status():
+    pass
+    
+
+
+
 
 @app.route('/ussd/callback', methods=['POST'])
 def ussd_callback():
@@ -24,46 +48,183 @@ def ussd_callback():
     # Menu navigation logic
     if text == "":
         response = "CON Welcome to SolarPay\n"
-        response += "1. Buy Solar Energy\n"
-        response += "2. Check Payment Status\n"
+        response += "1. Solar-Power For Home\n"
+        response += "2. My Installment\n"
+        response += "3. Report/Complaints\n"
+        response += "4. Check Payment Status\n"
     elif text == "1":
         # Buy Solar Energy selected
-        response = "CON Choose your payment plan:\n"
-        response += "1. Standard Plan (3 installments)\n"
-        response += "2. Flexible Plan (6 installments)\n"
-        response += "3. Low-Income Support Plan (12 installments)\n"
+        response = "CON Enter the desired Purchase Mode:\n (Solar-Power for Home costs Ksh.100,000)\n"
+        response += "1. One-Time Payment\n"
+        response += "2. Lipa Mdogo Mdogo\n"
     elif text == "1*1":
-        # Standard Plan selected
-        response = "CON You will pay Ksh 5,000 in 3 installments of Ksh 5,000.\n"
-        response += "CON Enter the amount you wish to pay:\n"
+        # Buy Solar Energy selected
+        response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n END"
+        # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
+        # will call them to do a site visit or they visit the agent and get sorted out. 
     elif text == "1*2":
-        # Flexible Plan selected
-        response = "CON You will pay Ksh 2,500 in 6 installments of Ksh 2,500.\n"
-        response += "CON Enter the amount you wish to pay:\n"
-    elif text == "1*3":
-        # Low-Income Support Plan selected
-        response = "CON You will pay Ksh 1,250 in 12 installments of Ksh 1,250.\n"
-        response += "CON Enter the amount you wish to pay:\n"
-    elif len(user_input) == 3:
-        # Handle user entering an amount for Standard Plan
-        amount = user_input[2]
-        payment_response = initiate_payment(phone_number, amount, request.url_root)
+        #Enrol in a Lipa Mdogo Mdogo Scheme. 
+        response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n" 
+        # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
+        # will call them to do a site visit or they visit the agent and get sorted out and also verify their eligibility
+        # for the Buy Now Pay Later scheme. Tell them to prepare their financial statements and records(M-Pesa, Bank)
+
+    elif text == "2":
+        response = "CON Welcome to your BYPL\n\n"
+        response += "1. Check my Payment Status\n"
+        response += "2. Pay installment\n"
+        response += "3. Check Previous Payments\n"
+  
+    elif text == "2*1":
+        # payment_status , Amount_due, Previous Payment, Upcoming payment, previous_Amount_paid
+        # Checks whether the user is on course with payment/ or in-default. Sends a message after this confirming the same. 
+        # if payment_status == "On-course": response should affirm the same. else, should send a warning of the days left to pay.
+        response = "END You're on course with payment for now."
+
+    elif text == "2*2":
+        # Select installment. If a user has a missed installment, they should only be able to pay for the missed installment. 
+        response = "CON Select which installment you want to make:\n"
+        response += "1. Upcoming Installment"
+        response += "2. Missed Installment"
+
+    elif text == "2*2*1":
+        #If a user is on course with their installment, then they can initiate payment for their installment.  
+        # The amount should be dynamic, depending on the payment plan a user is on or the custom payment plan that a user agreed on.   
+        # An sms should be sent upon receipt of the callback response confirming pay.
+        amount = 1
+        payment_response = initiate_payment(phone_number, amount, callback_url)
         response = f"END You will be billed Ksh {amount} in installments. Payment status: {payment_response['ResponseDescription']}"
-    elif len(user_input) == 4 and user_input[1] == "2":
-        # Handle user entering an amount for Flexible Plan
-        amount = user_input[3]
-        payment_response = initiate_payment(phone_number, amount, request.url_root)
+
+    elif text == "2*2*2":
+        # As mentioned, this should only be accessible if the condition payment_status is defaulted. 
+        # The amount should be the same amount specified in the payment plan. 
+        # In the event a user literally pays mdogo mdogo, the amount will be a deduction of the total sum paid, from the expected amount
+        # An sms should be sent upon receipt of the callback response confirming pay.
+        amount = 1
+        payment_response = initiate_payment(phone_number, amount, callback_url)
         response = f"END You will be billed Ksh {amount} in installments. Payment status: {payment_response['ResponseDescription']}"
-    elif len(user_input) == 4 and user_input[1] == "3":
-        # Handle user entering an amount for Low-Income Support Plan
-        amount = user_input[3]
-        payment_response = initiate_payment(phone_number, amount, request.url_root)
-        response = f"END You will be billed Ksh {amount} in installments. Payment status: {payment_response['ResponseDescription']}"
+
+    elif text == "2*3":
+        # This should send an sms to a user with the last 5 payments. 
+        response = "END You will receive a message with your payment history shortly\n"
+
+    elif text == "3": 
+        # This option allows users to send complaints or report technical problems to SolarPay.
+        # A reference number should be sent for logging and resolution.
+        response = "CON You want to report:\n"
+        response += "1. Solar System Failure\n"
+        response += "2. Billing or Payment Issues\n"
+        response += "3. Account Issues\n"
+        response += "4. Product/Service Support\n"
+        response += "5. General Inquiries\n"
+
+    elif text == "3*1": 
+        # Solar System Failure submenu
+        response = "CON Please select the type of failure:\n"
+        response += "1. System not powering on\n"
+        response += "2. Solar panel damage\n"
+        response += "3. Battery not charging\n"
+        response += "4. Inverter malfunction\n"
+        response += "5. Other technical issue\n"
+
+    elif text == "3*2": 
+        # Billing or Payment Issues submenu
+        response = "CON Please select your issue:\n"
+        response += "1. Failed payment\n"
+        response += "2. Incorrect billing amount\n"
+        response += "3. Missed installment\n"
+        response += "4. Request payment history\n"
+        response += "5. Other billing issue\n"
+
+    elif text == "3*3": 
+        # Account Issues submenu
+        response = "CON Please select the account issue:\n"
+        response += "1. Account locked\n"
+        response += "2. Incorrect personal details\n"
+        response += "3. Change payment plan\n"
+        response += "4. Unable to access account\n"
+        response += "5. Other account issue\n"
+
+    elif text == "3*4": 
+        # Product/Service Support submenu
+        response = "CON Please select the issue:\n"
+        response += "1. Delayed service (installation, activation, etc.)\n"
+        response += "2. Poor customer service experience\n"
+        response += "3. Inquiry about product/service upgrade\n"
+        response += "4. Service termination\n"
+        response += "5. Other service issue\n"
+    
+    elif text == "3*5": 
+        # General Inquiries submenu
+        response = "CON Please select the type of inquiry:\n"
+        response += "1. Inquiry about SolarPay services\n"
+        response += "2. Request for documentation (receipts, invoices)\n"
+        response += "3. Clarification on terms or conditions\n"
+        response += "4. Request for customer support contact\n"
+        response += "5. Other general inquiry\n"
+
+
+    elif text == "4":
+        # Check Payment Status submenu
+        response = "CON Please select the type of payment status inquiry:\n"
+        response += "1. Check last payment status\n"
+        response += "2. Check outstanding balance\n"
+        response += "3. View full payment history\n"
+        response += "4. Check next installment due date\n"
+        response += "5. Other payment-related inquiries\n"
+        response += "0. Back\n" 
+
+
+    elif text == "4*1":
+        # Handle check last payment status
+        payment_status = get_last_payment_status(phone_number)  # Call a function to check payment status
+        response = f"END Your last payment status is: {payment_status}."
+
+    elif text == "4*2":
+        # Handle check outstanding balance
+        outstanding_balance = get_outstanding_balance(phone_number)  # Call a function to check balance
+        response = f"END Your outstanding balance is: Ksh {outstanding_balance}."
+
+    elif text == "4*3":
+        # Handle view full payment history
+        response = "END Your full payment history has been sent to your phone via SMS."
+        send_payment_history(phone_number)  # Function to send the user their payment history
+
+    elif text == "4*4":
+        # Handle check next installment due date
+        next_due_date = get_next_due_date(phone_number)  # Call a function to retrieve next due date
+        response = f"END Your next installment is due on: {next_due_date}."
+
     else:
         response = "END Invalid option. Please try again."
 
     # Return the response as plain text
     return make_response(response, 200)
+
+
+
+@app.route('/payment', methods=['POST'])
+def payment():
+    """ Endpoint to handle payment requests from the USSD interface """
+    if request.method == 'POST':
+        phone = request.form.get('phone')  # User's phone number
+        amount = request.form.get('amount')  # Payment amount
+        print(f"Processing payment for {phone} of amount {amount}")
+
+        # Initiate payment using the STK push function
+        # callback_url = request.url_root  # Get the root URL for the callback
+        payment_response = initiate_payment(phone, amount, callback_url )
+        
+        return payment_response  # Return the payment response in JSON format
+
+@app.route('/callback', methods=['POST'])
+def callback():
+    """ Callback endpoint to handle payment confirmation from Safaricom """
+    data = request.get_json()
+    print("Payment callback data:", data)
+    # Here you can process the callback data, e.g., confirm payment status and update the database
+    return "ok"
+
 
 
 @app.route('/enroll', methods=['POST'])
@@ -82,31 +243,28 @@ def enroll_user():
         return "User not found", 404
 
 
-@app.route('/payment', methods=['POST'])
-def payment():
-    """ Endpoint to handle payment requests from the USSD interface """
-    if request.method == 'POST':
-        phone = request.form.get('phone')  # User's phone number
-        amount = request.form.get('amount')  # Payment amount
-        print(f"Processing payment for {phone} of amount {amount}")
-
-        # Initiate payment using the STK push function
-        callback_url = request.url_root  # Get the root URL for the callback
-        payment_response = initiate_payment(phone, amount, callback_url)
-        
-        return payment_response  # Return the payment response in JSON format
-
-@app.route('/callback', methods=['POST'])
-def callback():
-    """ Callback endpoint to handle payment confirmation from Safaricom """
-    data = request.get_json()
-    print("Payment callback data:", data)
-    # Here you can process the callback data, e.g., confirm payment status and update the database
-    return "ok"
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # elif text == "1*2":
+    #     # Buy Solar Energy selected
+    #     response = "CON Choose your payment plan:\n"
+    #     response += "1. Standard Plan (12 installments)\n"
+    #     response += "2. Flexible Plan (24 installments)\n"
+    #     response += "3. Low-Income Support Plan (36 installments)\n"

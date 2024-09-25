@@ -14,7 +14,7 @@ class User(db.Model):
     name = db.Column(db.String(50))
     county = db.Column(db.String(19))
     town = db.Column(db.String(25))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=db.func.now())
 
     def __repr__(self):
         return f'<User {self.phone_number}>'
