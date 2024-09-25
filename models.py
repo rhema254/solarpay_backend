@@ -17,6 +17,8 @@ class users(db.Model):
     town = db.Column(db.String(25))
     created_at = db.Column(db.DateTime, default=db.func.now())
 
+    payments = db.relationship('payments', backref='user', lazy=True)
+
     def __repr__(self):
         return f'<User {self.phone_number}>'
 
