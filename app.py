@@ -4,6 +4,7 @@ from config import DevConfig
 from models import *
 from exts import db
 from decouple import config
+from functions import *
 # from flask_cors import CORS
 # from flask_sqlalchemy import SQLAlchemy
 
@@ -45,72 +46,82 @@ def get_last_payment_status(phone_number):
 def ussd_callback():
     session_id = request.form.get('sessionId')
     service_code = request.form.get('serviceCode')
-    phone_number = request.form.get('phoneNumber')
+    phone = request.form.get('phoneNumber')
+    phone_number = convert_phone_number(phone)  # Convert phone to standard format
     text = request.form.get('text')
+
     print(phone_number)
     # Split the input text (user interaction)
     user_input = text.split('*')
     
     existing_user = User.get_by_phone_number(phone_number)  # Check if the user exists
 
-   # Menu navigation logic
+    # Menu navigation logic
     if text == "":
         response = "CON Welcome to SolarPay\n"
-        response += "0. Register into SolarPay "
+        response += "0. Register into SolarPay\n"
         response += "1. Solar-Power For Home\n"
         response += "2. My Installment\n"
         response += "3. Report/Complaints\n"
         response += "4. Check Payment Status\n"
 
-    elif text == "0":
+    elif text == "0":  
         # Start registration process
         if existing_user:
             response = "END You are already registered with SolarPay."
         else:
-            response = "CON Please enter your phone number:\n"
-    elif text == "0*1":
-        # Capture phone number
-        phone_no = text.split("*")[1]  # Assuming the phone number is part of the text input
-        if phone_no == phone_number:
-            response = "CON Please enter the phone number you are currently using to make this request."
-            response += "0. Go back\n"
-        else:            
-            response = f"CON Enter your first name:\n"  # Prompt for first name
-    elif text == "0*1*0":
-        response = "CON Please enter your phone number:\n"  # Prompt to re-enter phone number     
+            response = "CON Please enter your phone number: \n"
 
-    elif text == "0*1*1":
-        # Capture first name
-        first_name = text.split("*")[2]
-        response = f"CON Enter your last name:\n"  # Prompt for last name
-    elif text == "0*1*1*":
-        # Capture last name
-        last_name = text.split("*")[3]
-        response = f"CON Enter your county:\n"  # Prompt for county
-    elif text == "0*1*1*1":
-        # Capture county
-        county = text.split("*")[4]
-        response = f"CON Enter your nearest town:\n"  # Prompt for town
-    elif text == "0*1*1*1*":
-        # Capture town
-        town = text.split("*")[5]
-        
-        # Now save the user to the database
-        new_user = User(
-            phone_number=phone_number,
-            f_name= first_name,
-            l_name= last_name,
-            county=county,
-            town=town
-        )
-        try:
-            new_user.save()  # Save the new user
-            response = "END Registration successful! Welcome to SolarPay.\n"
+    elif len(user_input) == 2 and user_input[0] == "0":  # Capture phone number input (phone numbers are longer)
+        phone_no = user_input[1]
+        if len(phone_no) >= 10 and phone_no.isdigit():  # Check that the input is a valid phone number
+            if phone_no == phone_number:
+                response = "CON Please enter the phone number you are currently using to make this request.\n"
+                response += "0. Go back\n"
+            else:
+                response = "CON Enter your first name:\n"  # Prompt for first name
+        else:
+            response = "CON Invalid phone number. Please try again:\n"
+    
+    elif len(user_input) == 3 and user_input[0] == "0" and user_input[2].isdigit():  # If the user chose 0*1
+        # We're assuming that after entering the phone number, we're expecting their first name
+        first_name = user_input[2]
+        if first_name.isalpha():  # Ensure input is alphabetic
+            response = "CON Enter your last name:\n"
+        else:
+            response = "CON Invalid name. Please enter your first name again:\n"
+    
+    elif len(user_input) == 4 and user_input[0] == "0" and user_input[3].isalpha():  # Capture last name
+        last_name = user_input[3]
+        response = "CON Enter your county:\n"
 
-
-        except Exception as e:
-            response = "END Registration failed. Please try again later.\n"
-
+    elif len(user_input) == 5 and user_input[0] == "0":  # Capture county (can be a mix of alphanumeric or words)
+        county = user_input[4]
+        if county.isalpha():  # County should be alphabetic
+            response = "CON Enter your nearest town:\n"
+        else:
+            response = "CON Invalid county. Please enter your county again:\n"
+    
+    elif len(user_input) == 6 and user_input[0] == "0":  # Capture town
+        town = user_input[5]
+        if town.isalpha():  # Town should be alphabetic
+            # Now save the user to the database
+            new_user = User(
+                phone_number=phone_number,
+                f_name=user_input[2],  # First name
+                l_name=user_input[3],  # Last name
+                county=county,
+                town=town
+            )
+            try:
+                new_user.save()  # Save the new user
+                response = "END Registration successful! Welcome to SolarPay.\n"
+            except Exception as e:
+                response = "END Registration failed. Please try again later.\n"
+        else:
+            response = "CON Invalid town name. Please try again:\n"
+    
+    return response
 
     elif text == "1":
         # Buy Solar Energy selected
