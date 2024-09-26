@@ -57,11 +57,11 @@ def ussd_callback():
             response = "CON Please enter OFFICIAL your First Name as It appears on Your National ID: \n"
 
     elif len(user_input) == 2 and user_input[0] == "0" and user_input[1].isalpha():  # Capture first name
-        first_name = user_input[1]
+        f_name = user_input[1]
         response = "CON Please enter your OFFICIAL Last Name as it appears on Your National ID:\n"
 
     elif len(user_input) == 3 and user_input[0] == "0" and user_input[2].isalpha():  # Capture last name
-        last_name = user_input[2]
+        l_name = user_input[2]
         response = "CON Enter your County:\n"
 
     elif len(user_input) == 4 and user_input[0] == "0":  # Capture county
@@ -83,7 +83,7 @@ def ussd_callback():
         )
         try:
             new_user.save()  # Save the new user
-            message = f"Welcome to SolarPay {first_name} {last_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+            message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             recipients = [phone_number]  # The user's phone number
             send_sms(message, recipients)
             response = "END Registration successful! Welcome to SolarPay.\n"
@@ -100,14 +100,14 @@ def ussd_callback():
     elif text == "1*1":
         # Buy Solar Energy selected
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n END"
-        message = f"Welcome to SolarPay {first_name} {last_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+        message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
         send_sms(message, phone_number)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out. 
     elif text == "1*2":
         #Enrol in a Lipa Mdogo Mdogo Scheme. 
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n" 
-        message = f"Welcome to SolarPay {first_name} {last_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+        message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
         send_sms(message, phone_number)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out and also verify their eligibility
