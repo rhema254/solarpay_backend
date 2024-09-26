@@ -9,11 +9,11 @@ from send_sms import *
 # from flask_cors import CORS
 # from flask_sqlalchemy import SQLAlchemy
 
+
 # Import the payment function
 from mpesa import initiate_payment
 
 app = Flask(__name__)
-CORS(app, resources={r"/": {"origins": ""}})
 app.config.from_object(DevConfig)
 app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 db.init_app(app)
@@ -322,6 +322,10 @@ def callback():
     return "ok"
 
 
+@app.route('/incoming-messages', methods=[])
+
+
+
 
 @app.route('/enroll', methods=['POST'])
 def enroll_user():
@@ -337,9 +341,6 @@ def enroll_user():
         return "User enrolled successfully", 200
     else:
         return "User not found", 404
-
-
-
 
 
 
