@@ -410,7 +410,7 @@ def ussd_callback():
         response = f"END Your next installment is due on: {next_due_date}."
 
     # Return the response as plain text
-    return make_response(response, 200)
+    return response, 200
 
 
 
