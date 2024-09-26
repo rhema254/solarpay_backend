@@ -1,5 +1,5 @@
 from flask import Flask, request, make_response
-from flask_restx import Api, Resource, fields
+
 from config import DevConfig
 from models import *
 from exts import db
