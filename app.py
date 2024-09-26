@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response
 from flask_restx import Api, Resource, fields
 from config import DevConfig
 from models import *
@@ -6,14 +6,14 @@ from exts import db
 from decouple import config
 from functions import *
 from send_sms import *
-
+# from flask_cors import CORS
 # from flask_sqlalchemy import SQLAlchemy
 
 # Import the payment function
 from mpesa import initiate_payment
 
 app = Flask(__name__)
-# CORS(app, resources={
+CORS(app, resources={r"/": {"origins": ""}})
 app.config.from_object(DevConfig)
 app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 db.init_app(app)
@@ -341,6 +341,10 @@ def enroll_user():
         return "User enrolled successfully", 200
     else:
         return "User not found", 404
+
+
+
+
 
 
 if __name__ == "__main__":
