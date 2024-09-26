@@ -408,12 +408,10 @@ def ussd_callback():
         send_payment_history(phone_number)  # Function to send the user their payment history
 
     elif text == "4*4":
+        
         # Handle check next installment due date
         next_due_date = get_next_due_date(phone_number)  # Call a function to retrieve next due date
         response = f"END Your next installment is due on: {next_due_date}."
-
-    else:
-        response = "END Invalid option. Please try again."
 
     # Return the response as plain text
     return make_response(response, 200)
