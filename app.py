@@ -99,11 +99,15 @@ def ussd_callback():
     elif text == "1*1":
         # Buy Solar Energy selected
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n END"
+        message = f"Welcome to SolarPay {first_name} {last_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+        send_sms(message, phone_number)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out. 
     elif text == "1*2":
         #Enrol in a Lipa Mdogo Mdogo Scheme. 
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n" 
+        message = f"Welcome to SolarPay {first_name} {last_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+        send_sms(message, phone_number)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out and also verify their eligibility
         # for the Buy Now Pay Later scheme. Tell them to prepare their financial statements and records(M-Pesa, Bank)
@@ -132,6 +136,7 @@ def ussd_callback():
         # An sms should be sent upon receipt of the callback response confirming pay.
         amount = 1
         payment_response = initiate_payment(phone_number, amount, callback_url)
+        send_sms(message, recipients=phone_number)
         response = f"END You will be billed Ksh {amount} in installments. Payment status: {payment_response['ResponseDescription']}"
 
     elif text == "2*2*2":
@@ -147,60 +152,233 @@ def ussd_callback():
         # This should send an sms to a user with the last 5 payments. 
         response = "END You will receive a message with your payment history shortly\n"
 
-    elif text == "3": 
-        # This option allows users to send complaints or report technical problems to SolarPay.
-        # A reference number should be sent for logging and resolution.
-        response = "CON You want to report:\n"
-        response += "1. Solar System Failure\n"
-        response += "2. Billing or Payment Issues\n"
+    
+    if text == "3": 
+        # Main complaints menu
+        response = "CON What issue would you like to report?\n"
+        response += "1. Power Supply Problems\n"
+        response += "2. Payment or Billing Issues\n"
         response += "3. Account Issues\n"
-        response += "4. Product/Service Support\n"
+        response += "4. Service/Installation Issues\n"
         response += "5. General Inquiries\n"
 
     elif text == "3*1": 
-        # Solar System Failure submenu
-        response = "CON Please select the type of failure:\n"
-        response += "1. System not powering on\n"
-        response += "2. Solar panel damage\n"
-        response += "3. Battery not charging\n"
-        response += "4. Inverter malfunction\n"
-        response += "5. Other technical issue\n"
+        # Power Supply Problems submenu
+        response = "CON Please specify the issue:\n"
+        response += "1. Solar system not turning on\n"
+        response += "2. Power outage or low power\n"
+        response += "3. System shutting down unexpectedly\n"
+        response += "4. Other power-related issue\n"
+
+    elif text == "3*1*1":
+        # Solar system not turning on
+        category = "Power Supply Problems"
+        description = "Solar system not turning on"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about the solar system not turning on has been logged. We will resolve it shortly."
+
+    elif text == "3*1*2":
+        # Power outage or low power
+        category = "Power Supply Problems"
+        description = "Power outage or low power"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about power outage or low power has been logged. We will resolve it shortly."
+
+    elif text == "3*1*3":
+        # System shutting down unexpectedly
+        category = "Power Supply Problems"
+        description = "System shutting down unexpectedly"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about the system shutting down unexpectedly has been logged. We will resolve it shortly."
+
+    elif text == "3*1*4":
+        # Other power-related issue
+        category = "Power Supply Problems"
+        description = "Other power-related issue"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint has been logged. We will resolve it shortly."
 
     elif text == "3*2": 
-        # Billing or Payment Issues submenu
-        response = "CON Please select your issue:\n"
-        response += "1. Failed payment\n"
+        # Payment or Billing Issues submenu
+        response = "CON Please specify your issue:\n"
+        response += "1. Payment not reflected\n"
         response += "2. Incorrect billing amount\n"
-        response += "3. Missed installment\n"
-        response += "4. Request payment history\n"
+        response += "3. Missed payment reminders\n"
+        response += "4. Overcharge or duplicate payment\n"
         response += "5. Other billing issue\n"
 
-    elif text == "3*3": 
-        # Account Issues submenu
-        response = "CON Please select the account issue:\n"
-        response += "1. Account locked\n"
-        response += "2. Incorrect personal details\n"
-        response += "3. Change payment plan\n"
-        response += "4. Unable to access account\n"
-        response += "5. Other account issue\n"
+    elif text == "3*2*1":
+        category = "Payment or Billing Issues"
+        description = "Payment not reflected"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about payment not being reflected has been logged. We will resolve it shortly."
 
-    elif text == "3*4": 
-        # Product/Service Support submenu
-        response = "CON Please select the issue:\n"
-        response += "1. Delayed service (installation, activation, etc.)\n"
-        response += "2. Poor customer service experience\n"
-        response += "3. Inquiry about product/service upgrade\n"
-        response += "4. Service termination\n"
-        response += "5. Other service issue\n"
-    
-    elif text == "3*5": 
-        # General Inquiries submenu
-        response = "CON Please select the type of inquiry:\n"
-        response += "1. Inquiry about SolarPay services\n"
-        response += "2. Request for documentation (receipts, invoices)\n"
-        response += "3. Clarification on terms or conditions\n"
-        response += "4. Request for customer support contact\n"
-        response += "5. Other general inquiry\n"
+    elif text == "3*2*2":
+        category = "Payment or Billing Issues"
+        description = "Incorrect billing amount"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about incorrect billing amount has been logged. We will resolve it shortly."
+
+    elif text == "3*2*3":
+        category = "Payment or Billing Issues"
+        description = "Missed payment reminders"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about missed payment reminders has been logged. We will resolve it shortly."
+
+    elif text == "3*2*4":
+        category = "Payment or Billing Issues"
+        description = "Overcharge or duplicate payment"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about overcharge or duplicate payment has been logged. We will resolve it shortly."
+
+    elif text == "3*2*5":
+        category = "Payment or Billing Issues"
+        description = "Other billing issue"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint has been logged. We will resolve it shortly."
+
+        # Account Issues submenu
+    elif text == "3*3*1":
+        category = "Account Issues"
+        description = "Cannot access my account"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about not being able to access your account has been logged. We will resolve it shortly."
+
+    elif text == "3*3*2":
+        category = "Account Issues"
+        description = "Incorrect personal details"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about incorrect personal details has been logged. We will resolve it shortly."
+
+    elif text == "3*3*3":
+        category = "Account Issues"
+        description = "Request to change payment plan"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your request to change the payment plan has been logged. We will resolve it shortly."
+
+    elif text == "3*3*4":
+        category = "Account Issues"
+        description = "Need to update contact details"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your request to update contact details has been logged. We will resolve it shortly."
+
+    elif text == "3*3*5":
+        category = "Account Issues"
+        description = "Other account issue"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint has been logged. We will resolve it shortly."
+
+    # Service/Installation Issues submenu
+    elif text == "3*4*1":
+        category = "Service/Installation Issues"
+        description = "Delay in installation"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about the delay in installation has been logged. We will resolve it shortly."
+
+    elif text == "3*4*2":
+        category = "Service/Installation Issues"
+        description = "Faulty installation or setup"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about faulty installation or setup has been logged. We will resolve it shortly."
+
+    elif text == "3*4*3":
+        category = "Service/Installation Issues"
+        description = "Service not activated"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint about service not being activated has been logged. We will resolve it shortly."
+
+    elif text == "3*4*4":
+        category = "Service/Installation Issues"
+        description = "Request for service upgrade"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your request for a service upgrade has been logged. We will resolve it shortly."
+
+    elif text == "3*4*5":
+        category = "Service/Installation Issues"
+        description = "Other service issue"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your complaint has been logged. We will resolve it shortly."
+
+    # General Inquiries submenu
+    elif text == "3*5*1":
+        category = "General Inquiries"
+        description = "How to use SolarPay services"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your inquiry about how to use SolarPay services has been logged. We will get back to you shortly."
+
+    elif text == "3*5*2":
+        category = "General Inquiries"
+        description = "Request for receipts or payment history"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your request for receipts or payment history has been logged. We will get back to you shortly."
+
+    elif text == "3*5*3":
+        category = "General Inquiries"
+        description = "Questions about terms and conditions"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your inquiry about the terms and conditions has been logged. We will get back to you shortly."
+
+    elif text == "3*5*4":
+        category = "General Inquiries"
+        description = "Request for customer support contact"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your request for customer support contact has been logged. We will get back to you shortly."
+
+
+    elif text == "3*5*5":
+        category = "General Inquiries"
+        description = "Other general inquiry"
+        user = User.get_by_phone_number(phone_number)
+        new_complaint = Complaint(user_id=user.id, category=category, description=description)
+        new_complaint.save()
+        response = "END Your inquiry has been logged. We will get back to you shortly."
+
 
 
     elif text == "4":
