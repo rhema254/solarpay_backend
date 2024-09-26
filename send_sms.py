@@ -19,7 +19,9 @@ def send_sms(message, recipients):
     :param recipients: List of phone numbers (in international format) to send SMS to
     """
     # Set a default shortCode or senderId (optional)
-    sender = ""
+    sender = "SOLARPAY"
+
+    
     
     try:
         # Send the SMS
