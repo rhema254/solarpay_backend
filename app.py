@@ -179,6 +179,7 @@ def ussd_callback():
         user = User.get_by_phone_number(phone_number)
         new_complaint = Complaint(user_id=user.id, category=category, description=description)
         new_complaint.save()
+        
         response = "END Your complaint about the solar system not turning on has been logged. We will resolve it shortly."
 
     elif text == "3*1*2":

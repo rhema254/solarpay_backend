@@ -18,6 +18,7 @@ class send_sms():
     """
     def send(self, recipients, message):
         # Set a default shortCode or senderId (optional)
+        print('gyfyciyciciciy')
         sender = "SOLARPAY"
         try:
             # Send the SMS
