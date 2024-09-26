@@ -6,15 +6,14 @@ from exts import db
 from decouple import config
 from functions import *
 from send_sms import *
-import mysql.connector
-from flask_cors import CORS
+
 # from flask_sqlalchemy import SQLAlchemy
 
 # Import the payment function
 from mpesa import initiate_payment
 
 app = Flask(__name__)
-CORS(app, resources={r"/": {"origins": ""}})
+# CORS(app, resources={
 app.config.from_object(DevConfig)
 app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
 db.init_app(app)
@@ -342,151 +341,6 @@ def enroll_user():
         return "User enrolled successfully", 200
     else:
         return "User not found", 404
-
-
-# MySQL database connection
-db = mysql.connector.connect(
-    host="iu51mf0q32fkhfpl.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-    user="rx6xtu9gd2rz9gxl",  # Your MySQL username
-    password="s7jw3du4doth1xq3",  # Your MySQL password
-    database="ljbs1gn825fxp1z6",  # Your database name
-    port=3306
-)
-
-# Route to get all users
-@app.route('/api/users', methods=['GET', 'OPTIONS'])
-def get_users():
-    if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
-    
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users")
-    users = cursor.fetchall()
-    cursor.close()
-    return jsonify(users)
-
-# Add a new user
-@app.route('/api/users', methods=['POST', 'OPTIONS'])
-def add_user():
-    if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
-
-    data = request.json
-    phone_number = data.get('phone_number')
-    f_name = data.get('f_name')
-    l_name = data.get('l_name')
-    county = data.get('county')
-    town = data.get('town')
-
-    try:
-        cursor = db.cursor()
-        sql = "INSERT INTO users (phone_number, f_name, l_name, county, town) VALUES (%s, %s, %s, %s, %s)"
-        values = (phone_number, f_name, l_name, county, town)
-        cursor.execute(sql, values)
-        db.commit()
-        cursor.close()
-        return jsonify({"message": "User added successfully!"}), 201
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return jsonify({"error": "Unable to add user."}), 500
-
-# Route to update a user
-@app.route('/api/users/<int:user_id>', methods=['PUT', 'OPTIONS'])
-def update_user(user_id):
-    if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
-
-    data = request.json
-    phone_number = data.get('phone_number')
-    f_name = data.get('f_name')
-    l_name = data.get('l_name')
-    county = data.get('county')
-    town = data.get('town')
-
-    try:
-        cursor = db.cursor()
-        sql = """
-        UPDATE users
-        SET phone_number = %s, f_name = %s, l_name = %s, county = %s, town = %s
-        WHERE id = %s
-        """
-        values = (phone_number, f_name, l_name, county, town, user_id)
-        cursor.execute(sql, values)
-        db.commit()
-        cursor.close()
-
-        if cursor.rowcount == 0:
-            return jsonify({"error": "User not found."}), 404
-
-        return jsonify({"message": "User updated successfully!"}), 200
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return jsonify({"error": "Unable to update user."}), 500
-
-# Route to get all payments
-@app.route('/api/payments', methods=['GET', 'OPTIONS'])
-def get_payments():
-    if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
-
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM payments")
-    payments = cursor.fetchall()
-    cursor.close()
-    return jsonify(payments)
-
-# Route to get all complaints
-@app.route('/api/complaints', methods=['GET', 'OPTIONS'])
-def get_complaints():
-    if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
-
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM complaints")  # Assuming 'complaints' is the correct table name
-    complaints = cursor.fetchall()
-    cursor.close()
-    return jsonify(complaints)
-
-@app.route('/api/complaints/<int:complaint_id>', methods=['PUT', 'OPTIONS'])
-def update_complaint_status(complaint_id):
-    if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
-
-    data = request.json
-    new_status = data.get('status')
-
-    if not new_status:
-        return jsonify({"error": "Status is required."}), 400  # Bad Request
-
-    try:
-        cursor = db.cursor()
-        sql = "UPDATE complaints SET status = %s WHERE id = %s"
-        cursor.execute(sql, (new_status, complaint_id))
-        db.commit()
-        cursor.close()
-
-        if cursor.rowcount == 0:
-            return jsonify({"error": "Complaint not found."}), 404  # Not Found
-
-        return jsonify({"message": "Complaint status updated successfully!"}), 200  # Success
-    except mysql.connector.Error as err:
-        print(f"Database Error: {err}")
-        return jsonify({"error": "Unable to update complaint status."}), 500  # Internal Server Error
-    except Exception as e:
-        print(f"Unexpected Error: {e}")
-        return jsonify({"error": "An unexpected error occurred."}), 500  # Internal Server Error
-
-# Function to handle the preflight OPTIONS request for CORS
-def _build_cors_preflight_response():
-    response = jsonify({'message': 'CORS preflight'})
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type")
-    return response
-
-if _name_ == '_main_':
-    app.run(debug=True, port=5000)
-
 
 
 if __name__ == "__main__":
