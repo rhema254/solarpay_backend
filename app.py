@@ -158,10 +158,8 @@ def ussd_callback():
         response = "CON What issue would you like to report?\n"
         response += "1. Power Supply Problems\n"
         response += "2. Payment or Billing Issues\n"
-        response += "3. Account Issues\n"
-        response += "4. Service/Installation Issues\n"
-        response += "5. General Inquiries\n"
-
+        
+      
     elif text == "3*1": 
         # Power Supply Problems submenu
         response = "CON Please specify the issue:\n"
