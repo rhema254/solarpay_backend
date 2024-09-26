@@ -88,6 +88,7 @@ def ussd_callback():
             send_sms(message, recipients)
             response = "END Registration successful! Welcome to SolarPay.\n"
         except Exception as e:
+            print(e)
             response = "END Registration failed. Please try again later.\n"
     
     
@@ -158,7 +159,7 @@ def ussd_callback():
         response = "CON What issue would you like to report?\n"
         response += "1. Power Supply Problems\n"
         response += "2. Payment or Billing Issues\n"
-        
+
       
     elif text == "3*1": 
         # Power Supply Problems submenu
