@@ -33,6 +33,7 @@ def ussd_callback():
     phone = request.form.get('phoneNumber')
     phone_number = convert_phone_number(phone)  # Convert phone to standard format
     text = request.form.get('text')
+ 
 
     print(phone_number)
     # Split the input text (user interaction)
@@ -84,7 +85,7 @@ def ussd_callback():
         try:
             new_user.save()  # Save the new user
             recipients = 'phone'
-            response = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+            response = f"Welcome to SolarPay\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             send_sms().send()
             print(response)
             print(phone)
