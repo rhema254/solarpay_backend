@@ -21,7 +21,7 @@ class send_sms():
         print('gyfyciyciciciy')
         sender = "SOLARPAY"
         try:
-            recepients = str(recipients)
+            
             # Send the SMS
             response = sms.send(message, recipients, sender)
             print(f"SMS sent successfully: {response}")

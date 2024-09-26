@@ -84,7 +84,7 @@ def ussd_callback():
         )
         try:
             new_user.save()  # Save the new user
-            recipients = phone
+            recipients = str(phone)
             message = f"Welcome to SolarPay\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             response = f"Welcome to SolarPay\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             send_sms().send(recipients, message)
