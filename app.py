@@ -379,8 +379,6 @@ def ussd_callback():
         new_complaint.save()
         response = "END Your inquiry has been logged. We will get back to you shortly."
 
-
-
     elif text == "4":
         # Check Payment Status submenu
         response = "CON Please select the type of payment status inquiry:\n"
@@ -390,7 +388,6 @@ def ussd_callback():
         response += "4. Check next installment due date\n"
         response += "5. Other payment-related inquiries\n"
         response += "0. Back\n" 
-
 
     elif text == "4*1":
         # Handle check last payment status
@@ -411,9 +408,6 @@ def ussd_callback():
         # Handle check next installment due date
         next_due_date = get_next_due_date(phone_number)  # Call a function to retrieve next due date
         response = f"END Your next installment is due on: {next_due_date}."
-
-    else:
-        response = "END Invalid option. Please try again."
 
     # Return the response as plain text
     return make_response(response, 200)
