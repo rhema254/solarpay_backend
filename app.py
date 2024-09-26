@@ -84,7 +84,7 @@ def ussd_callback():
         )
         try:
             new_user.save()  # Save the new user
-            recipients = str(phone)
+            recipients = str(phone).replace("+", "")
             message = f"Welcome to SolarPay\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             response = f"Welcome to SolarPay\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             send_sms().send(recipients, message)
@@ -106,7 +106,7 @@ def ussd_callback():
         # Buy Solar Energy selected
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n END"
         message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
-        recipients = phone
+        recipients = str(phone).replace("+", "")
         send_sms().send(recipients, message)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out. 
@@ -114,7 +114,7 @@ def ussd_callback():
         #Enrol in a Lipa Mdogo Mdogo Scheme. 
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n" 
         message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
-        recipients = phone
+        recipients = str(phone).replace("+", "")
         send_sms().send(recipients, message)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out and also verify their eligibility
