@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 from flask_restx import Api, Resource, fields
 from config import DevConfig
 from models import *
@@ -6,7 +6,6 @@ from exts import db
 from decouple import config
 from functions import *
 from send_sms import *
-import jsonify
 import mysql.connector
 from flask_cors import CORS
 # from flask_sqlalchemy import SQLAlchemy
