@@ -34,7 +34,7 @@ def ussd_callback():
     phone_number = convert_phone_number(phone)  # Convert phone to standard format
     text = request.form.get('text')
  
-    
+    print(phone)
     print(phone_number)
     # Split the input text (user interaction)
     user_input = text.split('*')
@@ -84,7 +84,7 @@ def ussd_callback():
         )
         try:
             new_user.save()  # Save the new user
-            recipients = 'phone'
+            recipients = phone
             message = f"Welcome to SolarPay\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             response = f"Welcome to SolarPay\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
             send_sms().send(recipients, message)
@@ -106,14 +106,16 @@ def ussd_callback():
         # Buy Solar Energy selected
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n END"
         message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
-        send_sms(message, phone_number)
+        recipients = phone
+        send_sms().send(recipients, message)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out. 
     elif text == "1*2":
         #Enrol in a Lipa Mdogo Mdogo Scheme. 
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n" 
         message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
-        send_sms(message, phone_number)
+        recipients = phone
+        send_sms().send(recipients, message)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out and also verify their eligibility
         # for the Buy Now Pay Later scheme. Tell them to prepare their financial statements and records(M-Pesa, Bank)
