@@ -1,4 +1,5 @@
 import africastalking
+import africastalking.Service
 from decouple import config
 
 # Initialize Africa's Talking
@@ -9,6 +10,8 @@ africastalking.initialize(username=username, api_key=api_key)
 sms = africastalking.SMS
 
 
+
+
 def send_sms(message, recipients):
     """
     Function to send SMS using Africa's Talking
@@ -16,7 +19,7 @@ def send_sms(message, recipients):
     :param recipients: List of phone numbers (in international format) to send SMS to
     """
     # Set a default shortCode or senderId (optional)
-    sender = "9686"
+    sender = ""
     
     try:
         # Send the SMS
