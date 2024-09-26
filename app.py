@@ -84,10 +84,12 @@ def ussd_callback():
         try:
             new_user.save()  # Save the new user
             recipients = 'phone'
-            message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
-            response = send_sms().send()
+            response = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+            send_sms().send()
             print(response)
             print(phone)
+            print(message)
+            print(recipients)
         except Exception as e:
             print(e)
             response = "END Registration failed. Please try again later.\n"

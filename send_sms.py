@@ -10,9 +10,6 @@ africastalking.initialize(username=username, api_key=api_key)
 print(api_key)
 sms = africastalking.SMS
 
-
-
-
 class send_sms():
     """
     Function to send SMS using Africa's Talking
