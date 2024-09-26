@@ -105,7 +105,7 @@ def ussd_callback():
     elif text == "1*1":
         # Buy Solar Energy selected
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n END"
-        message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+        message = f"Welcome to SolarPay !!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
         recipients = str(phone).replace("+", "")
         send_sms().send(recipients, message)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
@@ -113,8 +113,8 @@ def ussd_callback():
     elif text == "1*2":
         #Enrol in a Lipa Mdogo Mdogo Scheme. 
         response = "END An Agent will contact you soon:\n Solar power for Home goes for Ksh. 100,000\n" 
-        message = f"Welcome to SolarPay {f_name} {l_name}!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
-        recipients = str(phone).replace("+", "")
+        message = f"Welcome to SolarPay!!\nThank you for signing up. An agent will contact you within the next 24hours to get to give you a brief of our solar solutions.\n\n Regards,\nSolarPay"
+        recipients = phone_number
         send_sms().send(recipients, message)
         # Send a follow-up message informing the user that their request has been recieved and an agent from Solar pay 
         # will call them to do a site visit or they visit the agent and get sorted out and also verify their eligibility
