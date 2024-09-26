@@ -255,7 +255,7 @@ def ussd_callback():
         new_complaint.save()
         response = "END Your complaint has been logged. We will resolve it shortly."
 
-        # Account Issues submenu
+    # Account Issues submenu
     elif text == "3*3*1":
         category = "Account Issues"
         description = "Cannot access my account"
